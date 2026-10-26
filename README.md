@@ -5,6 +5,12 @@ Here is a video of the game in action
 
 
 
+https://github.com/user-attachments/assets/8bf754d3-37d4-457f-8fe4-12b555dcfc60
+
+
+
+
+
 <h3>The Game </h3>
 <h4> Game Area</h4>
 The first thing I did when I was building this game was to create the game area itself. I watched a YouTube video that talked through the basics, and after a bit of trial and error, I figured out how I wanted the area to look. 
