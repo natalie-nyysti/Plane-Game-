@@ -228,20 +228,110 @@ Over the process of building the game, I added some variables and initial condit
     grass_scroll = 0  # Horizontal offset used to animate the ground.a
     GRASS_SPEED = 2  # Shared horizontal speed for the grass and mountains.
 
-<h4>Crash logic </h4>
-I have two different crashes in this game: the first is player vs. enemy, and the second is player vs. mountain or ground. 
+<h4>Crash Logic</h4>
 
-<h5> Player vs Enemy </h5>
+I have two different crashes in this game: the first is player vs. enemy, and the second is player vs. mountain or ground.
+
+<h5>Player Enemy</h5>
+
+In the main function, I added a check to see if the player's hitbox overlaps with an enemy's hitbox. If they overlap, it triggers the explosion function and sets the game over variable to true. This stops the normal gameplay from continuing. I also made it so that the enemy that hits the player crashes as well.
+
+          
+          if enemy.active and player.hitbox.colliderect(enemy.hitbox):
+         trigger_explosion(player.rect.center)
+         game_over = True
 
 
-<h4> The Main fuction</h4>
-This is where the game comes to life. 
+The colliderect() function checks if the two hitboxes overlap. I used hitboxes that are smaller than the actual images so that the collision detection is a little more forgiving.
+
+<h5>Triggering the Explosion</h5>
+
+I created a separate function called trigger_explosion() to handle what happens when the player crashes into an enemy. This function creates an explosion at the player's position and starts the crash animation for the player. It also checks which enemy collided with the player and starts its crash animation. I added the explosion_active variable to make sure that the explosion is not triggered repeatedly.
+
+          def trigger_explosion(center):
+    global explosion_active
+    if not explosion_active:
+        explosions.append(Explosion(center))
+        player.start_crash()
+
+        # Also crash the enemy involved in the collision.
+        for enemy in enemies:
+            if enemy.active and enemy.hitbox.colliderect(player.hitbox):
+                enemy.start_crash()
+
+        explosion_active = True
+
+<h5>Player Crash Animation</h5>
+
+Next, I added the start_crash() function to the Player class. This changes the crashed variable to true and sets the initial crash velocity to 1. I used this variable to tell the game when the plane has crashed so that it can switch from normal movement to the crash animation.
+
+          def start_crash(self):
+    if not self.crashed:
+        self.crashed = True
+        self.crash_velocity_y = 1
+
+I then created the update_crash() function to control how the plane moves after a crash. I made the plane accelerate downward by increasing its crash velocity by 0.45 each frame, with a maximum speed of 9. I also made the plane move to the left by one pixel each frame and rotate by half a degree each frame to make it look like it has lost control.
+
+          def update_crash(self):
+    self.crash_velocity_y = min(self.crash_velocity_y + 0.45, 9)
+    self.rect.x -= 1
+    self.rect.y += self.crash_velocity_y
+    self.crash_angle -= .5
+
+I added another check to see when the plane reaches the ground. When it does, the plane stops moving downward and its rotation increases further. This makes the crash look more realistic.
+
+          if self.rect.bottom >= SCREEN_HEIGHT - 10:
+    self.rect.bottom = SCREEN_HEIGHT - 10
+    self.crash_velocity_y = 0
+    self.crash_angle -= 4
+
+     self.hitbox.center = self.rect.center
+
+Finally, I changed the draw() function so that when the plane has crashed, it updates the crash animation and rotates the image using pygame.transform.rotate(). This allows the plane to keep falling and rotating even after the game has ended.
+
+          def draw(self, surface):
+    if self.crashed:
+        self.update_crash()
+
+    image = pygame.transform.rotate(self.image, self.crash_angle) if self.crashed else self.image
+    surface.blit(image, image.get_rect(center=self.rect.center))
+
+<h5>Player vs Mountain or Ground</h5>
+
+For the ground collision, I added a check in the main function to see if the bottom of the player's hitbox reaches the ground collision boundary. If it does, the start_crash() function is called and the game over variable is set to true. Unlike the enemy collision, this does not trigger an explosion.
+
+               if player.hitbox.bottom >= SCREEN_HEIGHT - GROUND_COLLISION_HEIGHT:
+                   player.start_crash()
+                   game_over = True
+
+Although I have a mountain class in the game, I have not added collision detection for the mountains yet. They currently act as visual obstacles that move across the screen.
 
 
+<h4>Game Over</h4>
 
-      
-      
-      
+Once game_over becomes true, the game stops updating the player, enemies, and mountains as part of normal gameplay. However, the drawing functions still run, which allows the crash animation and explosion to continue. I also added a Game Over message in the center of the screen so the player knows that the game has ended.
+
+               if not game_over:
+    player.update()
+
+     # Draw the player and all obstacles.
+     player.draw(screen)
+     
+     for enemy in enemies:
+         enemy.draw(screen)
+     
+     for mountain in mountains:
+         mountain.draw(screen)
+     
+     for explosion in explosions:
+         explosion.draw(screen)
+     
+     if game_over:
+         message = game_over_font.render("Game Over", True, (255, 255, 255))
+         screen.blit(message, message.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)))
+           
+           
+           
       
       
       
