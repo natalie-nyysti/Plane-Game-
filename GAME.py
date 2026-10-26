@@ -29,7 +29,7 @@ def load_image(path, fallback_size, fallback_color, scale_to=None, alternatives=
  
 # Load the sky and calculate enough copies to cover the window while scrolling.
 bg = load_image(
-    "/Users/natalienyysti/Desktop/ENGENERING/python projects 2026/sky1.png",
+    "enter sky path here",
     (SCREEN_WIDTH, SCREEN_HEIGHT), (110, 190, 235),
 )
 tiles = math.ceil(SCREEN_WIDTH / bg.get_width()) + 1
@@ -45,7 +45,7 @@ class Player:
     # The player can flap upward and is kept within the top and bottom screen bounds.
     def __init__(self):
         self.image = load_image(
-            "/Users/natalienyysti/Desktop/ENGENERING/python projects 2026/C130.png",
+           "enter Player path here",
             (86, 60), (60, 60, 60), scale_to=(86, 60),
         )
         self.image = pygame.transform.flip(self.image, True, False)  # Face the other way.
@@ -112,7 +112,7 @@ class Enemy:
     # Enemies enter from the right, travel left, and respawn after leaving the screen.
     def __init__(self, speed):
         self.image = load_image(
-            "/Users/natalienyysti/Desktop/ENGENERING/python projects 2026/fighter jet .png",
+            "enter enemy path here",
             (78, 44), (190, 55, 55), scale_to=(78, 44),
         )
         self.rect = pygame.Rect(0, 0, 78, 30)  # Visible bounds for positioning.
@@ -173,9 +173,9 @@ class Mountain:
     # Mountains scroll in from the right along the ground as stationary obstacles.
     def __init__(self):
         self.image = load_image(
-            "/Users/natalienyysti/Download/moutain1.png",
+            "enter mountain path here",
             (220, 400), (90, 400, 100), scale_to=(220, 400),
-            alternatives=("/Users/natalienyysti/Downloads/moutain1.png",),
+            alternatives=("Enter mountain path here",),
         )
         self.rect = pygame.Rect(0, 0, 220, 190)  # Visible bounds for positioning.
         self.hitbox = pygame.Rect(0, 0, 180, 150)  # Collision area, slightly inset.
@@ -215,7 +215,7 @@ class Explosion:
     def __init__(self, center):
         if Explosion.image is None:
             Explosion.image = load_image(
-                "/Users/natalienyysti/Downloads/ENDEXPL1.png",
+                "enter explosion path here",
                 (140, 140), (255, 180, 0), scale_to=(140, 140),
                
                 )
